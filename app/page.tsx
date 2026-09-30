@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CalendarDays, Car, Check, ChevronDown, Clock3, Compass, HandHeart,
   Heart, House, MapPin, Menu, Phone, ShieldCheck, Sparkles, SunMedium,
@@ -41,6 +41,12 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,11 +56,16 @@ export default function Home() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && menuOpen) closeMenu();
+    };
+    window.addEventListener("keydown", onKeyDown);
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
   return (
     <main id="top">
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <div className="prototype-note"><span>Private concept preview</span><span className="prototype-note__detail">A vision for the future of Treasure Coast care</span></div>
 
       <header className={`site-header ${scrolled ? "site-header--scrolled" : ""}`}>
@@ -62,19 +73,19 @@ export default function Home() {
           <BrandMark />
           <nav className="desktop-nav" aria-label="Primary navigation"><a href="#services">Services</a><a href="#about">About</a><a href="#difference">Why Us</a><a href="#faq">FAQ</a></nav>
           <div className="header-actions"><a className="phone-link" href={phoneHref} aria-label={`Call ${phoneDisplay}`}><Phone size={17} />{phoneDisplay}</a><a className="button button--primary button--small" href="#contact">Request Care</a></div>
-          <button className="menu-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu /></button>
+          <button ref={menuButtonRef} className="menu-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu" aria-expanded={menuOpen} aria-controls="mobile-menu"><Menu /></button>
         </div>
       </header>
 
-      <div className={`mobile-menu ${menuOpen ? "mobile-menu--open" : ""}`} aria-hidden={!menuOpen}>
-        <div className="mobile-menu__top"><BrandMark /><button className="menu-toggle" onClick={() => setMenuOpen(false)} aria-label="Close menu"><X /></button></div>
+      <div id="mobile-menu" className={`mobile-menu ${menuOpen ? "mobile-menu--open" : ""}`} aria-hidden={!menuOpen} inert={!menuOpen} role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div className="mobile-menu__top"><BrandMark /><button className="menu-toggle" onClick={closeMenu} aria-label="Close menu" autoFocus={menuOpen}><X /></button></div>
         <nav aria-label="Mobile navigation">
-          <a href="#services" onClick={() => setMenuOpen(false)}>Services</a><a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#difference" onClick={() => setMenuOpen(false)}>Why Us</a><a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+          <a href="#services" onClick={closeMenu}>Services</a><a href="#about" onClick={closeMenu}>About</a><a href="#difference" onClick={closeMenu}>Why Us</a><a href="#faq" onClick={closeMenu}>FAQ</a>
         </nav>
-        <div className="mobile-menu__actions"><a className="button button--primary" href="#contact" onClick={() => setMenuOpen(false)}>Request Care</a><a className="mobile-menu__phone" href={phoneHref}><Phone size={18} /> {phoneDisplay}</a></div>
+        <div className="mobile-menu__actions"><a className="button button--primary" href="#contact" onClick={closeMenu}>Request Care</a><a className="mobile-menu__phone" href={phoneHref}><Phone size={18} /> {phoneDisplay}</a></div>
       </div>
 
-      <section className="hero" aria-labelledby="hero-title">
+      <section className="hero" id="main-content" aria-labelledby="hero-title">
         <div className="hero__wash" aria-hidden="true" />
         <div className="shell hero__grid">
           <div className="hero__content">
@@ -85,7 +96,7 @@ export default function Home() {
             <div className="hero__reassurance"><div className="avatar-stack" aria-hidden="true"><span>TC</span><span><Heart size={15} fill="currentColor" /></span><span><Check size={16} /></span></div><p><strong>Start with a conversation.</strong><br />No pressure. Just a thoughtful next step.</p></div>
           </div>
           <div className="hero__visual">
-            <div className="hero__image-frame"><img src="/images/hero-care.png" alt="A caregiver sharing a warm conversation with an older woman at home" /><div className="hero__image-shade" aria-hidden="true" /></div>
+            <div className="hero__image-frame"><img src="/images/hero-care.webp" width="1536" height="1024" fetchPriority="high" decoding="async" alt="A caregiver sharing a warm conversation with an older woman at home" /><div className="hero__image-shade" aria-hidden="true" /></div>
             <div className="care-note"><span className="care-note__icon"><Heart size={18} fill="currentColor" /></span><p><strong>Personal care, thoughtfully matched</strong><small>Support shaped around your family</small></p></div>
             <div className="hero__coastline" aria-hidden="true"><span>27.4° N</span><i /></div>
           </div>
@@ -103,7 +114,7 @@ export default function Home() {
       </div></section>
 
       <section className="story" id="about"><div className="shell story__grid">
-        <div className="story__visual"><img src="/images/family-care.png" alt="A father and daughter enjoying time together at home with support nearby" /><div className="story__caption"><span>Peace of mind</span><strong>is knowing someone dependable is there.</strong></div></div>
+        <div className="story__visual"><img src="/images/family-care.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="A father and daughter enjoying time together at home with support nearby" /><div className="story__caption"><span>Peace of mind</span><strong>is knowing someone dependable is there.</strong></div></div>
         <div className="story__content"><span className="eyebrow eyebrow--light">Care for them. Confidence for you.</span><h2>Love stays at the center.<br /><em>We help with the rest.</em></h2><p>When someone you love needs a little extra support, every detail matters. A ride to an appointment. A familiar routine. A warm meal. A real conversation.</p><p>Treasure Coast Home Health Services is being built around one simple belief: people deserve to feel seen, respected and comfortable in the place they know best.</p><a className="text-link text-link--light" href="#difference">Discover our approach</a></div>
       </div></section>
 
@@ -122,7 +133,7 @@ export default function Home() {
 
       <section className="section faq" id="faq"><div className="shell faq__grid">
         <div className="faq__intro"><span className="eyebrow">Good questions are welcome</span><h2>What families<br /><em>want to know.</em></h2><p>Choosing support for someone you love is personal. Here are a few simple starting points.</p><a className="text-link" href={phoneHref}>Call us at {phoneDisplay}</a></div>
-        <div className="faq__list">{faqs.map((item, index) => { const isOpen = activeFaq === index; return <article className={`faq-item ${isOpen ? "faq-item--open" : ""}`} key={item.question}><button onClick={() => setActiveFaq(isOpen ? null : index)} aria-expanded={isOpen}><span>{item.question}</span><ChevronDown /></button><div className="faq-item__answer"><p>{item.answer}</p></div></article>; })}</div>
+        <div className="faq__list">{faqs.map((item, index) => { const isOpen = activeFaq === index; const answerId = `faq-answer-${index}`; return <article className={`faq-item ${isOpen ? "faq-item--open" : ""}`} key={item.question}><button onClick={() => setActiveFaq(isOpen ? null : index)} aria-expanded={isOpen} aria-controls={answerId}><span>{item.question}</span><ChevronDown aria-hidden="true" /></button><div id={answerId} className="faq-item__answer" aria-hidden={!isOpen}><p>{item.answer}</p></div></article>; })}</div>
       </div></section>
 
       <section className="final-cta" id="contact"><div className="final-cta__glow" aria-hidden="true" /><div className="shell final-cta__inner"><span className="eyebrow eyebrow--light">The next step can be simple</span><h2>Let’s talk about what<br /><em>would make life easier.</em></h2><p>You don’t need to have every answer before reaching out. Tell us what’s on your mind, and we’ll take it from there.</p><div className="final-cta__actions"><a className="button button--white" href={phoneHref}>Request Care</a><a className="final-cta__phone" href={phoneHref}><Phone size={18} /> {phoneDisplay}</a></div><span className="final-cta__note">Prototype inquiry experience — no health information is collected.</span></div></section>
