@@ -30,9 +30,17 @@ function BrandMark({ inverse = false }: { inverse?: boolean }) {
   return (
     <a className={`brand ${inverse ? "brand--inverse" : ""}`} href="#top" aria-label="Treasure Coast Home Health Services home">
       <span className="brand__mark" aria-hidden="true">
-        <svg viewBox="0 0 48 48"><path d="M7.5 21.5 24 8l16.5 13.5" /><path d="M12 20.5v18h24v-18" /><path d="M24 37.2s-9-5.1-9-11.1c0-5.2 6.2-6.8 9-2.7 2.8-4.1 9-2.5 9 2.7 0 6-9 11.1-9 11.1Z" /></svg>
+        <svg viewBox="0 0 72 72">
+          <circle className="logo-disc" cx="36" cy="36" r="34" />
+          <path className="logo-roof" d="M11.5 30.5 36 10.8l24.5 19.7" />
+          <path className="logo-wave" d="M8.5 48.5c7.4 9.5 16.6 14.2 27.5 14.2s20.1-4.7 27.5-14.2" />
+          <path className="logo-heart" d="M36 58.3c-4.4-4-17.2-10.1-17.2-20.1 0-7.6 9.2-10.1 13.5-4.1L36 39l3.7-4.9c4.3-6 13.5-3.5 13.5 4.1 0 10-12.8 16.1-17.2 20.1Z" />
+          <circle className="logo-person" cx="29.8" cy="39.4" r="3.3" />
+          <circle className="logo-person" cx="42.4" cy="38.8" r="3.3" />
+          <path className="logo-people" d="M24.9 48.2c.6-4 2.4-5.9 5.2-5.9 2.7 0 4.6 2 5.3 5.9m1.2-.2c.6-4 2.6-6 5.7-6 2.7 0 4.5 1.8 5.1 5.4" />
+        </svg>
       </span>
-      <span className="brand__type"><strong>TREASURE COAST</strong><small>HOME HEALTH SERVICES</small></span>
+      <span className="brand__type"><strong>TREASURE <em>COAST</em></strong><small><i /> HOME HEALTH SERVICES <i /></small></span>
     </a>
   );
 }
